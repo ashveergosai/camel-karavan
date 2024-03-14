@@ -5,7 +5,7 @@
       id: from-6a50
       uri: jetty
       parameters:
-        httpUri: http://0.0.0.0:8082/resourceUri
+        httpUri: http://localhost:8080/resourceUri
       steps:
         - unmarshal:
             id: unmarshal-4849
