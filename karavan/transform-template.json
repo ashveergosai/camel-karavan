@@ -1,0 +1,7 @@
+{
+  "sku": "${body.id}",
+  "name": "${body.name} (${body.id})",
+  "categoryMapping": ${body.prodhier},
+  "weight": ${body.weight},
+  "weightUnit": "${body.weightUnit}"
+}
