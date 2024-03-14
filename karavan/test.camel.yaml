@@ -1,0 +1,52 @@
+- route:
+    id: route-9546
+    nodePrefixId: route-e72
+    from:
+      id: from-6a50
+      uri: jetty
+      parameters:
+        httpUri: http://0.0.0.0:8383/resourceUri
+      steps:
+        - unmarshal:
+            id: unmarshal-4849
+            json:
+              id: json-a5a9
+              library: Gson
+        - transform:
+            id: transform-b2e8
+            expression:
+              simple:
+                id: simple-b996
+                expression: >
+                  .transform().simple("{\"sku\":${body.id},\"name\":\"${body.name}
+                  (${body.id})\",\"categoryMapping\":${body.prodhier},\"weight\":${body.weight},\"weightUnit\":${body.weightUnit}}")
+        - marshal:
+            id: marshal-6bec
+            json:
+              id: json-abf2
+              library: Gson
+        - to:
+            id: to-354d
+            uri: http
+            parameters:
+              httpUri: >-
+                http://app.komatsu.test/rest/V1/integration/admin/token?username=Ashveer&password=Consnet01
+        - setProperty:
+            id: setProperty-1fe6
+            name: integrationKey
+            expression:
+              simple:
+                id: simple-a086
+                expression: simple("${body}")
+        - to:
+            id: to-1d7f
+            uri: http
+            parameters:
+              httpUri: http://app.komatsu.test/rest/all/V1/api/adapter/v1/data
+        - setHeader:
+            id: setHeader-6e88
+            name: Authorization
+            expression:
+              simple:
+                id: simple-3503
+                expression: simple("Bearer ${exchangeProperty.integrationKey}")
