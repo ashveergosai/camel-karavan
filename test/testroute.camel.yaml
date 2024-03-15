@@ -1,7 +1,7 @@
 - restConfiguration:
     component: jetty
-    scheme: karavan:8080
-    host: http://localhost:8080
+    scheme: http
+    host: 0.0.0.0
     port: '8083'
     contextPath: /my-endpoint
     apiContextPath: /my-endpoint
@@ -11,27 +11,16 @@
     post:
       - id: post-981b
         description: my-endpoint
-        path: http://localhost:8080/my-endpoint
+        path: /my-endpoint
         to: direct:route-9549
         consumes: application/json
         produces: application/json
         bindingMode: json
         routeId: route-9550
-        param:
-          - description: myparam
-            name: myparam
-            type: body
-            defaultValue: '1'
-            required: '1'
-            collectionFormat: multi
-            dataType: json
-            dataFormat: json
         responseMessage:
           - code: '200'
             message: Success
             responseModel: karavan:8080
-          - code: '200'
-            message: Success
 - route:
     id: route-9549
     nodePrefixId: route-e72
