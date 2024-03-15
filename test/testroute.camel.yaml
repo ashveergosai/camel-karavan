@@ -1,10 +1,9 @@
 - restConfiguration:
-    component: jetty
+    component: platform-http
     scheme: http
-    host: 0.0.0.0
+    host: localhost
     port: '8080'
     contextPath: /my-endpoint
-    apiContextPath: /my-endpoint
     bindingMode: json
 - rest:
     id: rest-6503
@@ -16,19 +15,22 @@
         consumes: application/json
         produces: application/json
         bindingMode: json
-        routeId: route-9550
+        routeId: route-6503
         responseMessage:
           - code: '200'
             message: Success
             responseModel: karavan:8080
 - route:
-    id: route-9549
-    nodePrefixId: route-e72
+    id: route-a018
+    nodePrefixId: route-2d9
     from:
-      id: from-a60b
-      uri: direct
+      id: from-e407
+      uri: rest
       parameters:
-        name: route-9549
+        path: /my-endpoint
+        routeId: test:8080
+        method: post
+        produces: test:8080
       steps:
         - unmarshal:
             id: unmarshal-1c10
