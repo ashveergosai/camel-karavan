@@ -1,68 +1,73 @@
+- restConfiguration:
+    component: jetty
+    scheme: karavan:8080
+    host: http://localhost:8080
+    port: '8083'
+    contextPath: /my-endpoint
+    apiContextPath: /my-endpoint
+    bindingMode: json
 - rest:
     id: rest-6503
     post:
-      - id:
-          post:
-            id:
-              post:
-                id: post-981b
-        path: /myendpoint
-        to: route-e72
+      - id: post-981b
+        description: my-endpoint
+        path: http://localhost:8080/my-endpoint
+        to: direct:route-9549
         consumes: application/json
+        produces: application/json
         bindingMode: json
-        routeId: route-e72
+        routeId: route-9550
+        param:
+          - description: myparam
+            name: myparam
+            type: body
+            defaultValue: '1'
+            required: '1'
+            collectionFormat: multi
+            dataType: json
+            dataFormat: json
         responseMessage:
           - code: '200'
             message: Success
+            responseModel: karavan:8080
+          - code: '200'
+            message: Success
 - route:
-    id: route-9546
+    id: route-9549
     nodePrefixId: route-e72
     from:
-      id: from-6a50
-      uri: jetty
+      id: from-a60b
+      uri: direct
       parameters:
-        httpUri: http://0.0.0.0:8083/myendpoint
+        name: route-9549
       steps:
         - unmarshal:
-            id: unmarshal-4849
+            id: unmarshal-1c10
             json:
-              id: json-a5a9
+              id: json-9362
               library: Gson
         - transform:
-            id: transform-b2e8
+            id: transform-1924
             expression:
-              simple:
-                id: simple-b996
-                expression: >
+              variable:
+                id: variable-28a5
+                expression: >-
                   .transform().simple("{\"sku\":${body.id},\"name\":\"${body.name}
                   (${body.id})\",\"categoryMapping\":${body.prodhier},\"weight\":${body.weight},\"weightUnit\":${body.weightUnit}}")
         - marshal:
-            id: marshal-6bec
+            id: marshal-db5e
             json:
-              id: json-abf2
+              id: json-d9b9
               library: Gson
         - to:
-            id: to-354d
+            id: to-8fa5
             uri: http
             parameters:
-              httpUri: >-
-                http://app.komatsu.test/rest/V1/integration/admin/token?username=Ashveer&password=Consnet01
-        - setProperty:
-            id: setProperty-1fe6
-            name: integrationKey
-            expression:
-              simple:
-                id: simple-a086
-                expression: simple("${body}")
-        - to:
-            id: to-1d7f
-            uri: http
-            parameters:
-              httpUri: http://app.komatsu.test/rest/all/V1/api/adapter/v1/data
+              httpUri: app.komatsu.test/rest/all/V1/api/adapter/v1/data
         - setHeader:
-            id: setHeader-6e88
+            id: setHeader-a2e0
             name: Authorization
             expression:
               simple:
-                id: simple-3503
-                expression: simple("Bearer ${exchangeProperty.integrationKey}")
+                id: simple-c453
+                expression: Bearer ${exchangeProperty.integrationKey}
