@@ -5,7 +5,7 @@
       id: from-6a50
       uri: jetty
       parameters:
-        httpUri: http://0.0.0.0/resourceUri
+        httpUri: http://0.0.0.0:8083/myendpoint
       steps:
         - unmarshal:
             id: unmarshal-4849
@@ -50,3 +50,19 @@
               simple:
                 id: simple-3503
                 expression: simple("Bearer ${exchangeProperty.integrationKey}")
+- rest:
+    id: rest-6503
+    post:
+      - id:
+          post:
+            id:
+              post:
+                id: post-981b
+        path: /myendpoint
+        to: testRoute
+        consumes: application/json
+        bindingMode: json
+        routeId: testRoute
+        responseMessage:
+          - code: '200'
+            message: Success
