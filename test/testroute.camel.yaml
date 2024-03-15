@@ -1,3 +1,19 @@
+- rest:
+    id: rest-6503
+    post:
+      - id:
+          post:
+            id:
+              post:
+                id: post-981b
+        path: /myendpoint
+        to: route-e72
+        consumes: application/json
+        bindingMode: json
+        routeId: route-e72
+        responseMessage:
+          - code: '200'
+            message: Success
 - route:
     id: route-9546
     nodePrefixId: route-e72
@@ -50,19 +66,3 @@
               simple:
                 id: simple-3503
                 expression: simple("Bearer ${exchangeProperty.integrationKey}")
-- rest:
-    id: rest-6503
-    post:
-      - id:
-          post:
-            id:
-              post:
-                id: post-981b
-        path: /myendpoint
-        to: testRoute
-        consumes: application/json
-        bindingMode: json
-        routeId: testRoute
-        responseMessage:
-          - code: '200'
-            message: Success
