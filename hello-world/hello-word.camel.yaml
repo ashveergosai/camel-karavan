@@ -1,0 +1,42 @@
+- rest:
+    id: rest-dfea
+    post:
+      - id: post-d28b
+        path: /
+        to: direct:my-internal-route
+        consumes: application/json
+        produces: application/json
+- route:
+    id: route-96f2
+    nodePrefixId: route-1a4
+    from:
+      id: from-2530
+      uri: direct
+      parameters:
+        name: my-internal-route
+      steps:
+        - log:
+            id: log-5c0a
+            message: ${body}
+        - unmarshal:
+            id: unmarshal-7c4c
+            json:
+              id: json-bab6
+        - transform:
+            id: transform-f9fe
+            expression:
+              simple:
+                id: simple-5157
+                expression: >-
+                  .transform().simple("{\"companyName\":${body.name},\"telephone\":\"${body.phone}
+                  (${body.id})\",\"companyName\":${body.name},\"telephone\":\"${body.phone,\"email\":${body.email},\"addressline_1\":${body.addressLine1},\"addresline_2\":${body.addressLine2}}")
+        - marshal:
+            id: marshal-4ea7
+            json:
+              id: json-845e
+        - to:
+            id: to-b227
+            uri: http
+            parameters:
+              httpUri: https://api.qcontact.com/api/v2/auth/sign_in
+              httpMethod: POST
