@@ -2,7 +2,7 @@
     component: platform-http
     scheme: http
     host: localhost
-    port: '8080'
+    port: '8081'
     contextPath: /my-endpoint
     bindingMode: json
 - rest:
@@ -55,10 +55,3 @@
             uri: http
             parameters:
               httpUri: app.komatsu.test/rest/all/V1/api/adapter/v1/data
-        - setHeader:
-            id: setHeader-a2e0
-            name: Authorization
-            expression:
-              simple:
-                id: simple-c453
-                expression: Bearer ${exchangeProperty.integrationKey}

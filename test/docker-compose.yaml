@@ -1,11 +1,12 @@
 services:
   test:
-    image: test
-    cpu_percent: 10
+    container_name: test
+    cpu_percent: '10'
+    image: localhost:5555/karavan/test:dev
     mem_limit: 1024M
     mem_reservation: 512M
-    restart: always
-    ports:
-      - "8081:8080"
     networks:
-      - karavan
+    - karavan
+    ports:
+    - 8081:8080
+    restart: always
