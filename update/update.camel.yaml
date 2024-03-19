@@ -1,0 +1,87 @@
+- rest:
+    id: rest-dfea
+    post:
+      - id: post-d2b8
+        path: /
+        to: direct:my-internal-route1
+        consumes: application/json
+        produces: application/json
+- route:
+    id: route-96h7
+    nodePrefixId: route-1a4
+    from:
+      id: from-2530
+      uri: direct
+      parameters:
+        name: my-internal-route1
+      steps:
+        - log:
+            id: log-31fd
+            message: 'Body before unmarshal: ${body}'
+        - unmarshal:
+            id: unmarshal-4ea7
+            json:
+              id: json-845e
+              library: Jackson
+        - setProperty:
+            id: setProperty-13e0
+            name: originalBody
+            expression:
+              simple:
+                id: simple-d172
+                expression: ${body}
+        - log:
+            id: log-31fd
+            message: 'Body after unmarshal: ${body}'
+        - transform:
+            id: transform-change-field-name
+            expression:
+              simple:
+                id: simple-6a4d
+                expression: |-
+                  {
+                          "fields": {
+                            "first_name": "${body[fields]['firstName']}"
+                          }
+                        }
+        - log:
+            id: log-before-transform
+            message: 'Body after transformation: ${body} Headers: ${headers}'
+        - setHeader:
+            id: setHeader-access-token
+            name: access-token
+            expression:
+              constant:
+                id: constant-7476
+                expression: bCuBqsivhd_SeamvZqE1LA
+        - setHeader:
+            id: setHeader-uid
+            name: uid
+            expression:
+              constant:
+                id: constant-5613
+                expression: ashveer@consnet.co.za
+        - setHeader:
+            id: setHeader-4b2c
+            name: Accept-Encoding
+            expression:
+              constant:
+                id: constant-encoding
+                expression: identity
+        - setHeader:
+            id: setHeader-client
+            name: client
+            expression:
+              constant:
+                id: constant-86c0
+                expression: pzBIGErYJHyFzh1ntKhuNg
+        - log:
+            id: log-headers
+            message: 'Headers: ${headers}'
+        - to:
+            id: to-patch
+            uri: https
+            parameters:
+              httpMethod: PATCH
+              httpUri: api.qcontact.com/api/v2/entities/Contact/3789559756
+              bridgeEndpoint: true
