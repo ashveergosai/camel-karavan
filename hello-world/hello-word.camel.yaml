@@ -15,42 +15,122 @@
       parameters:
         name: my-internal-route
       steps:
-        - unmarshal:
-            id: unmarshal-json
-            json:
-              id: json
         - log:
-            id: log-before-transform
-            message: 'Body before transformation: ${body}'
-        - marshal:
-            id: marshal-4ea7
+            id: log-31fd
+            message: 'Body before unmarshal: ${body}'
+        - unmarshal:
+            id: unmarshal-4ea7
             json:
               id: json-845e
+              library: Jackson
+        - setProperty:
+            id: setProperty-13e0
+            name: originalBody
+            expression:
+              simple:
+                id: simple-d172
+                expression: ${body}
+        - log:
+            id: log-31fd
+            message: 'Body after unmarshal: ${body}'
+        - transform:
+            id: transform-change-field-name
+            expression:
+              simple:
+                id: simple-6a4d
+                expression: |-
+                  {
+                          "fields": {
+                            "name": "${body[fields]['companyName']}",
+                            "addressline_1": "${body[fields]['addressLine1']}",
+                            "addressline_2": "${body[fields]['addressLine2']}",
+                            "town": "${body[fields]['town']}",
+                            "county": "${body[fields]['county']}",
+                            "postcode": "${body[fields]['postcode']}",
+                            "country": "${body[fields]['country']}",
+                            "telephone": "${body[fields]['telephone']}",
+                            "email": "${body[fields]['email']}"
+                          }
+                        }
+        - log:
+            id: log-before-transform
+            message: 'Body after transformation: ${body} Headers: ${headers}'
         - setHeader:
             id: setHeader-access-token
             name: access-token
             expression:
               constant:
-                id: constant-8204
-                expression: SeNs2f0L_m-AzyIi6o6ssw
+                id: constant-7476
+                expression: bCuBqsivhd_SeamvZqE1LA
         - setHeader:
             id: setHeader-uid
             name: uid
             expression:
               constant:
-                id: constant-246b
+                id: constant-5613
                 expression: ashveer@consnet.co.za
+        - setHeader:
+            id: setHeader-4b2c
+            name: Accept-Encoding
+            expression:
+              constant:
+                id: constant-encoding
+                expression: identity
         - setHeader:
             id: setHeader-client
             name: client
             expression:
               constant:
-                id: constant-4aa0
-                expression: ZMRUcbi-BEcjNECJmTQQyA
+                id: constant-86c0
+                expression: pzBIGErYJHyFzh1ntKhuNg
+        - log:
+            id: log-headers
+            message: 'Headers: ${headers}'
         - to:
             id: to-b227
             uri: https
             parameters:
               httpMethod: POST
               httpUri: api.qcontact.com/api/v2/entities/Company
+              bridgeEndpoint: true
+        - unmarshal:
+            id: unmarshal-response
+            json:
+              id: json-response
+              library: Jackson
+        - log:
+            id: log-before-transform
+            message: 'Response: ${body}'
+        - log:
+            id: log-1324
+            message: 'Content-Type: ${headers[Content-Type]}'
+        - transform:
+            id: transform-6faf
+            expression:
+              simple:
+                id: simple-95a9
+                expression: |-
+                  {
+                  "fields": {
+                                "company": "${body['id']}",
+                                "addressLine1": "${exchangeProperty.originalBody[fields]['addressLine1']}",
+                                "addressLine2": "${exchangeProperty.originalBody[fields]['addressLine2']}",
+                                "town": "${exchangeProperty.originalBody[fields]['town']}",
+                                "county": "${exchangeProperty.originalBody[fields]['county']}",
+                                "postcode": "${exchangeProperty.originalBody[fields]['postcode']}",
+                                "country": "${exchangeProperty.originalBody[fields]['country']}",
+                                "telephone": "${exchangeProperty.originalBody[fields]['telephone']}",
+                                "email": "${exchangeProperty.originalBody[fields]['email']}",
+                                "first_name": "${exchangeProperty.originalBody[fields]['firstName']}",
+                                "last_name": "${exchangeProperty.originalBody[fields]['last_name']}"
+                                }
+                  }
+        - log:
+            id: log-9a12
+            message: 'Body for contact: ${body}'
+        - to:
+            id: to-d78c
+            uri: https
+            parameters:
+              httpUri: api.qcontact.com/api/v2/entities/Contact
               bridgeEndpoint: true
