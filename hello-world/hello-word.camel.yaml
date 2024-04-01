@@ -4,8 +4,8 @@
       - id: post-d28b
         path: /
         to: direct:my-internal-route
-        consumes: application/json
-        produces: application/json
+        consumes: application/xml
+        produces: application/xml
 - route:
     id: route-96f2
     nodePrefixId: route-1a4
@@ -20,9 +20,8 @@
             message: 'Body before unmarshal: ${body}'
         - unmarshal:
             id: unmarshal-4ea7
-            json:
-              id: json-845e
-              library: Jackson
+            jacksonXml:
+              id: jacksonXml-0277
         - setProperty:
             id: setProperty-13e0
             name: originalBody
@@ -40,18 +39,17 @@
                 id: simple-6a4d
                 expression: |-
                   {
-                          "fields": {
-                            "name": "${body[fields]['companyName']}",
-                            "addressline_1": "${body[fields]['addressLine1']}",
-                            "addressline_2": "${body[fields]['addressLine2']}",
-                            "town": "${body[fields]['town']}",
-                            "county": "${body[fields]['county']}",
-                            "postcode": "${body[fields]['postcode']}",
-                            "country": "${body[fields]['country']}",
-                            "telephone": "${body[fields]['telephone']}",
-                            "email": "${body[fields]['email']}"
-                          }
-                        }
+                    "fields": {
+                      "name": "${body['entry']['content']['properties']['FullName']}",
+                      "addressline_1": "${body['entry']['content']['properties']['HouseNumber']} ${body['entry']['content']['properties']['StreetName']}",
+                      "addressline_2": "${body['entry']['content']['properties']['CityName']}",
+                      "town": "${body['entry']['content']['properties']['CityName']}",
+                      "postcode": "${body['entry']['content']['properties']['PostalCode']}",
+                      "country": "${body['entry']['content']['properties']['Country']}",
+                      "telephone": "0788220266",
+                      "email": "komatsu@s4.co.za"
+                    }
+                  }
         - log:
             id: log-before-transform
             message: 'Body after transformation: ${body} Headers: ${headers}'
@@ -61,7 +59,7 @@
             expression:
               constant:
                 id: constant-7476
-                expression: bCuBqsivhd_SeamvZqE1LA
+                expression: _SX2bmETj8XyQObXTEktUQ
         - setHeader:
             id: setHeader-uid
             name: uid
@@ -77,12 +75,19 @@
                 id: constant-encoding
                 expression: identity
         - setHeader:
+            id: setHeader-4b2c
+            name: Content-Type
+            expression:
+              constant:
+                id: constant-encoding
+                expression: application/json
+        - setHeader:
             id: setHeader-client
             name: client
             expression:
               constant:
                 id: constant-86c0
-                expression: pzBIGErYJHyFzh1ntKhuNg
+                expression: d97L5DjcGwIECtEuZObXJA
         - log:
             id: log-headers
             message: 'Headers: ${headers}'
@@ -113,16 +118,15 @@
                   {
                   "fields": {
                                 "company": "${body['id']}",
-                                "addressLine1": "${exchangeProperty.originalBody[fields]['addressLine1']}",
-                                "addressLine2": "${exchangeProperty.originalBody[fields]['addressLine2']}",
-                                "town": "${exchangeProperty.originalBody[fields]['town']}",
-                                "county": "${exchangeProperty.originalBody[fields]['county']}",
-                                "postcode": "${exchangeProperty.originalBody[fields]['postcode']}",
-                                "country": "${exchangeProperty.originalBody[fields]['country']}",
-                                "telephone": "${exchangeProperty.originalBody[fields]['telephone']}",
-                                "email": "${exchangeProperty.originalBody[fields]['email']}",
-                                "first_name": "${exchangeProperty.originalBody[fields]['firstName']}",
-                                "last_name": "${exchangeProperty.originalBody[fields]['last_name']}"
+                                "addressLine1": "${exchangeProperty.originalBody['entry']['content']['properties']['HouseNumber']} ${exchangeProperty.originalBody['entry']['content']['properties']['StreetName']}",
+                                "addressLine2": "${exchangeProperty.originalBody['entry']['content']['properties']['CityName']}",
+                                "town": "${exchangeProperty.originalBody['entry']['content']['properties']['CityName']}",
+                                "postcode": "${exchangeProperty.originalBody['entry']['content']['properties']['PostalCode']}",
+                                "country": "${exchangeProperty.originalBody['entry']['content']['properties']['Country']}",
+                                "telephone": "0788220266",
+                                "email": "komatsu@s4.co.za",
+                                "first_name": "Kom",
+                                "last_name": "User"
                                 }
                   }
         - log:
