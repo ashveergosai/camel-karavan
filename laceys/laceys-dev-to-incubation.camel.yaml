@@ -1,0 +1,114 @@
+- rest:
+    id: rest-dfea
+    post:
+      - id: post-d28b
+        path: /product
+        to: direct:my-internal-route
+        consumes: application/json
+        produces: application/json
+- rest:
+    id: rest-dfea
+    post:
+      - id: post-d2b8
+        path: /order
+        to: direct:my-internal-route1
+        consumes: application/json
+        produces: application/json
+- route:
+    id: route-96f2
+    nodePrefixId: route-1a4
+    from:
+      id: from-2530
+      uri: direct
+      parameters:
+        name: my-internal-route
+      steps:
+        - log:
+            id: log-31fd
+            message: 'Body before unmarshal: ${body}'
+        - unmarshal:
+            id: unmarshal-4ea7
+            jacksonXml:
+              id: jacksonXml-0277
+        - setProperty:
+            id: setProperty-13e0
+            name: originalBody
+            expression:
+              simple:
+                id: simple-d172
+                expression: ${body}
+        - log:
+            id: log-31fd
+            message: 'Body after unmarshal: ${body}'
+        - transform:
+            id: transform-change-field-name
+            expression:
+              simple:
+                id: simple-6a4d
+                expression: |
+                  {
+                    "metadata": {
+                      "action": "${body['metadata']['action']}",
+                      "object": "${body['metadata']['object']}",
+                      "integrationKey": "${body['metadata']['integrationKey']}",
+                      "route": {
+                        "source": "${body['metadata']['route']['source']}",
+                        "target": "${body['metadata']['route']['target']}",
+                        "format": "${body['metadata']['route']['format']}"
+                      }
+                    },
+                    "data": {
+                      "sku": "${body['data']['product']}",
+                      "name": "${body['data']['productname']}",
+                      "weight": "${body['data']['weight']}",
+                      "weightUnit": "${body['data']['weightUnit']}"
+                    }
+                  }
+        - log:
+            id: log-before-transform
+            message: 'Body after transformation: ${body} Headers: ${headers}'
+        - setProperty:
+            id: setProperty-4328
+            name: sendBody
+            expression:
+              simple:
+                id: simple-e566
+                expression: ${body}
+        - to:
+            id: to-5488
+            uri: https
+            parameters:
+              httpUri: >-
+                https://incubation.digitradenow.com/rest/V1/integration/admin/token?username=Ashveer&password=Consnet02
+              bridgeEndpoint: true
+              httpMethod: POST
+        - setHeader:
+            id: setHeader-5c7e
+            name: Bearer
+            expression:
+              simple:
+                id: simple-fdd0
+                expression: ${body}
+        - to:
+            id: to-a4c4
+            uri: https
+            parameters:
+              httpUri: >-
+                https://incubation.digitradenow.com/rest/all/V1/api/adapter/v1/data
+              bridgeEndpoint: true
+              httpMethod: POST
+        - log:
+            id: log-56f8
+            message: ${body}
+- route:
+    id: route-96h7
+    nodePrefixId: route-1a4
+    from:
+      id: from-2530
+      uri: direct
+      parameters:
+        name: my-internal-route1
+      steps:
+        - log:
+            id: log-31fd
+            message: 'Update Body before unmarshal: ${body}'
